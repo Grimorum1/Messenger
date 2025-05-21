@@ -1,16 +1,17 @@
 import logging
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from config import settings
 from db.db_setup import db_helper
 from groups.schemas import GroupCreate, GroupAddUser
 from groups.service import create, join, get
 
 router = APIRouter(prefix="/groups", tags=["Groups"])
 
-logger = logging.getLogger("groups")
-logging.basicConfig(level=logging.INFO)
-
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=settings.level_logger)
 
 @router.post("/")
 async def create_group(

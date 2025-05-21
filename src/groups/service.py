@@ -1,13 +1,18 @@
+import logging
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 
 from chats.schemas import ChatCreate, ChatType
 from chats.service import create_chat
+from config import settings
 from groups.model import Group
-from groups.routers import logger
 from groups.schemas import GroupCreate, GroupAddUser
 
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=settings.level_logger)
 
 async def create(group_schema: GroupCreate, session: AsyncSession) -> dict:
     if not group_schema.members_list:

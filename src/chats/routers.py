@@ -3,15 +3,17 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
+from config import settings
 from .schemas import ChatCreate
 from . import service
 from db.db_setup import db_helper
 from messages.service import create_message
 
-router = APIRouter(prefix='/chat', tags=['Chat',])
 
-logger = logging.getLogger("chat")
-logging.basicConfig(level=logging.INFO)  # или DEBUG для подробного лога
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=settings.level_logger)
+
+router = APIRouter(prefix='/chat', tags=['Chat',])
 
 
 @router.websocket("/ws/{client_id}/{chat_id}")

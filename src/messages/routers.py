@@ -5,15 +5,17 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 
+from config import settings
 from db.db_setup import db_helper
 from .model import Message
 from .schemas import MessageRead
 from .service import delete_messages_by_chat_id as delete_service
 
-logger = logging.getLogger(__name__)
-
 router = APIRouter(prefix='/messages', tags=['Messages'])
 
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=settings.level_logger)
 
 @router.delete('/by_chat_id/{chat_id}')
 async def delete_messages_by_chat_id(
