@@ -1,11 +1,12 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import HTTPException, status
 
 from chats.schemas import ChatCreate, ChatType
 from chats.service import create_chat
 from groups.model import Group
+from groups.routers import logger
 from groups.schemas import GroupCreate, GroupAddUser
-
 
 
 async def create(group_schema: GroupCreate, session: AsyncSession) -> dict:
@@ -25,7 +26,9 @@ async def join(group_schema: GroupAddUser, session: AsyncSession) -> str:
     group = result.scalars().first()
 
     if not group:
-        raise f"Группа с ID {group_schema.group_id} не найдена"
+        logger.warning(f"Попытка добавить пользователя в несуществующую группу с ID {group_schema.group_id}")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Группа с ID {group_schema.group_id} не найдена")
 
     if group.members_list is None:
         group.members_list = []
@@ -40,5 +43,5 @@ async def join(group_schema: GroupAddUser, session: AsyncSession) -> str:
 
 async def get(session: AsyncSession):
     result = await session.execute(select(Group))
-    group = result.scalars().all()
-    return list(group)
+    groups = result.scalars().all()
+    return list(groups)

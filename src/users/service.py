@@ -6,7 +6,6 @@ from users.model import User
 from users.schemas import UserCreate
 
 
-
 async def get_user(user_id: int, session: AsyncSession):
     return await session.get(User, user_id)
 
@@ -16,7 +15,6 @@ async def get_users(session: AsyncSession):
     result: Result = await session.execute(stmt)
     users = result.scalars().all()
     return list(users)
-
 
 
 async def create_users(user: UserCreate, session: AsyncSession):

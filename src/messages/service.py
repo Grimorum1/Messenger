@@ -4,20 +4,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from messages.model import Message
 
 
-
-
-
-
-
 async def create_message(
         message: str,
         client_id: int,
         chat_id: int,
-        session: AsyncSession):
+        session: AsyncSession
+):
     mes = Message(chat_id=chat_id, sender_id=client_id, text=message)
     session.add(mes)
     await session.commit()
-
 
 
 async def message_is_read(
@@ -46,4 +41,3 @@ async def delete_messages_by_chat_id(chat_id: int, session: AsyncSession):
     stmt = delete(Message).where(Message.chat_id == chat_id)
     await session.execute(stmt)
     await session.commit()
-

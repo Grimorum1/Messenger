@@ -47,7 +47,7 @@ class ConnectionManager:
             is_read = False
             for user_id, connection in self.active_connections[room_id].items():
                 if user_id == sender_id:
-                    self_connection = (connection, )
+                    self_connection = (connection,)
                 else:
                     is_read = True
                     message_with_class = {
@@ -66,6 +66,7 @@ class ConnectionManager:
                 }
                 await connection.send_json(message_with_class)
 
+
 async def create_chat(chat_data: ChatCreate, session: AsyncSession) -> int:
     chat_data = chat_data.model_dump(by_alias=True)
     chat = Chat(**chat_data)
@@ -80,13 +81,13 @@ async def get_chat(session: AsyncSession, chat_id: int | None = None):
 
     if chat_id:
         stmt = (
-        select(Chat, UserAlias.id, UserAlias.name)
-        .select_from(Chat)
-        .join(UserAssoc, UserAssoc.chat_id == Chat.id, isouter=True)
-        .join(UserAlias, UserAlias.id == UserAssoc.user_id, isouter=True)
-        .join(Message, Message.chat_id == Chat.id, isouter=True).where(Chat.id == chat_id)
-        .order_by(Message.timestamp.desc())
-    )
+            select(Chat, UserAlias.id, UserAlias.name)
+            .select_from(Chat)
+            .join(UserAssoc, UserAssoc.chat_id == Chat.id, isouter=True)
+            .join(UserAlias, UserAlias.id == UserAssoc.user_id, isouter=True)
+            .join(Message, Message.chat_id == Chat.id, isouter=True).where(Chat.id == chat_id)
+            .order_by(Message.timestamp.desc())
+        )
     else:
         stmt = (
             select(Chat, UserAlias.id, UserAlias.name)
@@ -107,5 +108,6 @@ async def get_chat(session: AsyncSession, chat_id: int | None = None):
         }
         for chat, user_id, user_name in rows
     ]
+
 
 manager = ConnectionManager()
