@@ -14,7 +14,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 async def add_user(
         user: schemas.UserCreate,
         session: AsyncSession = Depends(db_base.scoped_session_dependency),):
-    return service.create_users(user=user, session=session)
+    return await service.create_users(user=user, session=session)
 
 
 
@@ -31,7 +31,7 @@ async def get_user(
     user_id: int,
     session: AsyncSession = Depends(db_base.scoped_session_dependency),
 ):
-    user = await get_user(session=session, user_id=user_id)
+    user = await service.get_user(session=session, user_id=user_id)
     if user:
         return user
 
